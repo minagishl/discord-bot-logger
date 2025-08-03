@@ -1,5 +1,6 @@
 import { Events, Message, EmbedBuilder, PartialMessage } from "discord.js";
 import logger from "~/utils/logger";
+import { isChannelExcluded } from "~/utils/channelFilter";
 
 export default {
   name: Events.MessageUpdate,
@@ -8,6 +9,9 @@ export default {
     newMessage: Message | PartialMessage
   ): Promise<void> {
     if (!newMessage.guild || newMessage.author?.bot) return;
+
+    // Check if this channel should be excluded from logging
+    if (isChannelExcluded(newMessage.channel.id)) return;
 
     const channelId = process.env.CHANNEL_ID;
     if (!channelId) return;

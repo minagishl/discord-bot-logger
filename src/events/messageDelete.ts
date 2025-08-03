@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { get } from "https";
 import logger from "~/utils/logger";
+import { isChannelExcluded } from "~/utils/channelFilter";
 
 export default {
   name: Events.MessageDelete,
@@ -14,6 +15,9 @@ export default {
 
     // If the sender is a bot, the process is aborted.
     if (message.author?.bot) return;
+
+    // Check if this channel should be excluded from logging
+    if (isChannelExcluded(message.channel.id)) return;
 
     const channelId = process.env.CHANNEL_ID;
     if (!channelId) return;

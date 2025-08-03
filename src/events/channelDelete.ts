@@ -6,10 +6,14 @@ import {
   TextChannel,
 } from "discord.js";
 import logger from "~/utils/logger";
+import { isChannelExcluded } from "~/utils/channelFilter";
 
 export default {
   name: Events.ChannelDelete,
   async execute(channel: GuildChannel): Promise<void> {
+    // Check if this channel should be excluded from logging
+    if (isChannelExcluded(channel.id)) return;
+
     const channelId = process.env.CHANNEL_ID;
     if (!channelId) return;
     const logChannel = channel.client.channels.cache.get(

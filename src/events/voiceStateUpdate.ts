@@ -1,11 +1,16 @@
 import { Events, EmbedBuilder, type VoiceState } from "discord.js";
 import logger from "~/utils/logger";
+import { isChannelExcluded } from "~/utils/channelFilter";
 
 export default {
   name: Events.VoiceStateUpdate,
   async execute(oldState: VoiceState, newState: VoiceState): Promise<void> {
     const channelId = process.env.CHANNEL_ID;
     if (!channelId || !newState.guild) return;
+
+    // Check if this channel should be excluded from logging
+    if (isChannelExcluded(channelId)) return;
+
     const logChannel = newState.guild.channels.cache.get(channelId);
     if (!logChannel || !logChannel.isTextBased()) return;
 

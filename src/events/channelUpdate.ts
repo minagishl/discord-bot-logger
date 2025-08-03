@@ -6,6 +6,7 @@ import {
   TextChannel,
 } from "discord.js";
 import logger from "~/utils/logger";
+import { isChannelExcluded } from "~/utils/channelFilter";
 
 export default {
   name: Events.ChannelUpdate,
@@ -13,6 +14,9 @@ export default {
     oldChannel: GuildChannel,
     newChannel: GuildChannel
   ): Promise<void> {
+    // Check if this channel should be excluded from logging
+    if (isChannelExcluded(newChannel.id)) return;
+
     const channelId = process.env.CHANNEL_ID;
     if (!channelId) return;
     const logChannel = newChannel.client.channels.cache.get(
