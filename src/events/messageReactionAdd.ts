@@ -1,0 +1,50 @@
+import {
+  EmbedBuilder,
+  Events,
+  type MessageReaction,
+  type User,
+} from "discord.js";
+import logger from "~/utils/logger";
+import { isChannelExcluded } from "~/utils/channelFilter";
+
+export default {
+  name: Events.MessageReactionAdd,
+  async execute(reaction: MessageReaction, user: User): Promise<void> {
+    try {
+      if (reaction.partial) {
+        reaction = await reaction.fetch();
+      }
+    } catch (error) {
+      logger.error(user.id, `Failed to fetch partial reaction: ${error}`);
+      return;
+    }
+
+    const message = reaction.message;
+    if (!message.guild) return;
+    if (user.bot) return;
+    if (isChannelExcluded(message.channelId)) return;
+
+    const channelId = process.env.CHANNEL_ID;
+    if (!channelId) return;
+    const logChannel = message.guild.channels.cache.get(channelId);
+    if (!logChannel || !logChannel.isTextBased()) return;
+
+    const embed = new EmbedBuilder()
+      .setTitle("Reaction Added")
+      .setColor(0x6a5acd)
+      .addFields(
+        { name: "User", value: `${user.tag} (<@${user.id}>)`, inline: false },
+        {
+          name: "Emoji",
+          value: reaction.emoji.toString() || reaction.emoji.name || "Unknown",
+          inline: true,
+        },
+        { name: "Channel", value: `<#${message.channelId}>`, inline: true },
+        { name: "Message", value: `[Jump](${message.url})`, inline: false }
+      )
+      .setTimestamp();
+
+    await logChannel.send({ embeds: [embed] });
+    logger.info(user.id, "Reaction added logged.");
+  },
+};
