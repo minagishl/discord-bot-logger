@@ -26,11 +26,6 @@ export default {
     if (oldRole.hexColor !== newRole.hexColor) {
       changes.push(`Color: **${oldRole.hexColor}** → **${newRole.hexColor}**`);
     }
-    if (oldRole.position !== newRole.position) {
-      changes.push(
-        `Position: **${oldRole.position}** → **${newRole.position}**`
-      );
-    }
     if (oldRole.mentionable !== newRole.mentionable) {
       changes.push(
         `Mentionable: **${oldRole.mentionable}** → **${newRole.mentionable}**`
