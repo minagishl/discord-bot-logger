@@ -9,7 +9,8 @@ export default {
     if (!channelId || !newState.guild) return;
 
     // Check if this channel should be excluded from logging
-    if (isChannelExcluded(channelId)) return;
+    const targetVoiceChannelId = newState.channelId ?? oldState.channelId;
+    if (targetVoiceChannelId && isChannelExcluded(targetVoiceChannelId)) return;
 
     const logChannel = newState.guild.channels.cache.get(channelId);
     if (!logChannel || !logChannel.isTextBased()) return;
