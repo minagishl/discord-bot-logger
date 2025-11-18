@@ -29,6 +29,7 @@ export default {
     const logChannel = message.guild.channels.cache.get(channelId);
     if (!logChannel || !logChannel.isTextBased()) return;
 
+    const emojiUrl = reaction.emoji.imageURL();
     const embed = new EmbedBuilder()
       .setTitle("Reaction Added")
       .setColor(0x6a5acd)
@@ -36,13 +37,22 @@ export default {
         { name: "User", value: `${user.tag} (<@${user.id}>)`, inline: false },
         {
           name: "Emoji",
-          value: reaction.emoji.toString() || reaction.emoji.name || "Unknown",
+          value:
+            (emojiUrl &&
+              `[${reaction.emoji.name ?? "External Emoji"}](${emojiUrl})`) ||
+            reaction.emoji.toString() ||
+            reaction.emoji.name ||
+            "Unknown",
           inline: true,
         },
         { name: "Channel", value: `<#${message.channelId}>`, inline: true },
         { name: "Message", value: `[Jump](${message.url})`, inline: false }
       )
       .setTimestamp();
+
+    if (emojiUrl) {
+      embed.setThumbnail(emojiUrl);
+    }
 
     await logChannel.send({ embeds: [embed] });
     logger.info(user.id, "Reaction added logged.");
