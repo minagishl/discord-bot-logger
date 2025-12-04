@@ -1,6 +1,12 @@
 node_modules/
 npm-debug.log
 yarn-error.log
+bun-debug.log
+
+# Lock files from other package managers
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
 
 dist/
 .DS_Store

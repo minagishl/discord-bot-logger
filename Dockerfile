@@ -1,26 +1,23 @@
-# Use an official Node.js runtime as a parent image
-FROM node:20
+# Use the official Bun runtime as a parent image
+FROM oven/bun:1-alpine
 
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml to the container
-COPY package.json pnpm-lock.yaml ./
-
-# Install pnpm globally
-RUN npm install -g pnpm
+# Copy package.json and bun.lock to the container
+COPY package.json bun.lock ./
 
 # Install app dependencies
-RUN pnpm install
+RUN bun install --frozen-lockfile
 
 # Copy the rest of the application code to the container
 COPY . .
 
 # Building the app
-RUN pnpm build
+RUN bun run build
 
 # Expose port 3000 for the app to listen on
 EXPOSE 3000
 
 # Start the app
-CMD ["pnpm", "start"]
+CMD ["bun", "run", "start"]

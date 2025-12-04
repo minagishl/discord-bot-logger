@@ -6,23 +6,23 @@
   "author": "minagishl",
   "type": "commonjs",
   "scripts": {
-    "build": "yarn rm && tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
-    "dev": "tsx src/index.ts",
-    "esbuild": "yarn rm && node scripts/build.js",
+    "build": "bun run rm && tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "dev": "bun run src/index.ts",
+    "esbuild": "bun run rm && bun run scripts/build.js",
     "check": "biome check ./src",
     "check:write": "biome check --write ./src",
     "format": "biome format ./src",
     "format:write": "biome format --write ./src",
     "lint": "biome lint ./src",
-    "register": "tsx src/register.ts",
-    "start": "node dist/index.js",
+    "register": "bun run src/register.ts",
+    "start": "bun run dist/index.js",
     "typecheck": "tsc --noEmit",
-    "rm": "node scripts/rm.js"
+    "rm": "bun run scripts/rm.js"
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "yarn lint:fix",
-      "yarn format"
+      "bun run lint",
+      "bun run format"
     ]
   },
   "dependencies": {
@@ -41,11 +41,5 @@
     "tsc-alias": "^1.8.16",
     "tsx": "^4.20.6",
     "typescript": "5.9.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@biomejs/biome",
-      "esbuild"
-    ]
   }
 }
